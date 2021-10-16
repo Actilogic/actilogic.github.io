@@ -1,13 +1,26 @@
-import React from "react";
-import { Link } from "gatsby"
+import React from "react"
+import { Link, graphql, useStaticQuery } from "gatsby"
+import * as footerStyles from "../styles/footer.module.scss"
 
 const Footer = () => {
-    return (
-        <footer>
-            <p>Actilogic copyright 2021</p> 
-        </footer>
-    )
-    
+  const data = useStaticQuery(graphql`
+    query {
+      site {
+        siteMetadata {
+          title
+          copyright
+        }
+      }
+    }
+  `)
+
+  return (
+    <footer className={footerStyles.footer}>
+      <p>
+        {data.site.siteMetadata.title + " " + data.site.siteMetadata.copyright}
+      </p>
+    </footer>
+  )
 }
 
-export default Footer;
+export default Footer
