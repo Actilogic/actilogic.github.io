@@ -9,12 +9,14 @@ import { NavigationBarComponent } from '../components/navigation-bar/navigation-
 import { HomeComponent } from '../components/home/home.component';
 import { FuelSaverComponent } from '../components/fuel-saver/fuel-saver.component';
 import { HttpClientModule } from '@angular/common/http';
+import { FooterComponent } from '../components/footer/footer.component';
 @NgModule({
   declarations: [
     AppComponent,
     NavigationBarComponent,
     HomeComponent,
-    FuelSaverComponent
+    FuelSaverComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

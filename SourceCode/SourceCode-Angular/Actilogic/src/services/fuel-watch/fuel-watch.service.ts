@@ -17,18 +17,19 @@ export class FuelWatchService {
     private messageService: MessageService) { }
 
   /** Log a FuelWatch message with the MessageService */
-  private log(message: string) {
-    this.messageService.add(`HeroService: ${message}`);
-  }
+  // private log(message: string) {
+  //   this.messageService.add(`HeroService: ${message}`);
+  // }
 
-  public getHeroes(): Observable<Hero[]> {
-    const heroes = of(HEROES);
-    return heroes;
-  }
+  // public getHeroes(): Observable<Hero[]> {
+  //   // const heroes = of(HEROES);
+  //   // return heroes;
+  //   return 1
+  // }
 
   public static test() {
     alert("fuel watch api called");
-    return 123;
+    return "this is the returened data";
   }
 
 

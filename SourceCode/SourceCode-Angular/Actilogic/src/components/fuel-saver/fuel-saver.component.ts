@@ -15,7 +15,7 @@ export class FuelSaverComponent implements OnInit {
 
   loadData() {
     console.log("loading data");
-    FuelWatchService.test();
+    alert(FuelWatchService.test());
   }
 
 }
