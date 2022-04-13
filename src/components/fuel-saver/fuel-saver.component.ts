@@ -9,6 +9,9 @@ import { environment } from 'src/environments/environment';
 })
 export class FuelSaverComponent implements OnInit {
 
+  public environment = environment;
+
+
   constructor(
     private FuelWatch: FuelWatchService,
     private FuelWatchService: FuelWatchService,
