@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  environmentName: "Development",
+  environmentName: "Production",
   CompanyName: "Actilogic",
   AuthorName: "Antonio Joboy"
 
