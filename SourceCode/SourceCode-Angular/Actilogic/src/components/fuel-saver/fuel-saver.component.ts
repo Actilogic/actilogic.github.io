@@ -8,14 +8,18 @@ import { FuelWatchService } from '../../services/fuel-watch/fuel-watch.service';
 })
 export class FuelSaverComponent implements OnInit {
 
-  constructor(private FuelWatch: FuelWatchService) { }
+  constructor(
+    private FuelWatch: FuelWatchService,
+    private FuelWatchService: FuelWatchService,
+  ) { }
 
   ngOnInit(): void {
   }
 
   loadData() {
     console.log("loading data");
-    alert(FuelWatchService.test());
+    console.log(FuelWatchService.test());
+    this.FuelWatchService.get();
   }
 
 }
