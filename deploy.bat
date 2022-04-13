@@ -1,4 +1,4 @@
 git pull
 git add --all
-git commit -m "update"
-git push
+git commit -m "%date%"
+@REM git push
