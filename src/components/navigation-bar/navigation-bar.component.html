@@ -1,0 +1,17 @@
+<nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
+    <!-- Load an icon library to show a hamburger menu (bars) on small screens -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Buttons and menu -->
+    <!-- Title -->
+    <div class="title">
+        Actilogic
+    </div>
+    <div class="topnav" id="myTopnav">
+        <a [routerLink]="['/home']" routerLinkActive="active">Home</a>
+        <a [routerLink]="['/FuelSaver']" routerLinkActive="active">Fuel Saver</a>
+    </div>
+</nav>
+
+
+<router-outlet></router-outlet>
