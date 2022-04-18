@@ -25,12 +25,13 @@ export class FuelSaverComponent implements OnInit {
   loadData() {
     this.FuelWatchService.get().subscribe({
       next: albums => {
-        console.log("this is htere1",this.FuelWatchFeedList);
-        console.log("this is alnus",albums);
+        console.log("this is htere1", this.FuelWatchFeedList);
+        console.log("this is alnus", albums);
         this.FuelWatchFeedList = <FuelWatchFeed><unknown>albums;
-        console.log("this is htere2",this.FuelWatchFeedList);
+        console.log("this is htere2", this.FuelWatchFeedList);
       }
     })
+    console.log("this is htere2", this.FuelWatchFeedList);
     // .subscribe(
     //   success => { console.log("this is what i want, success in loading component", success); },
     //   error => {

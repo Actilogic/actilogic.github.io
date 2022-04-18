@@ -39,7 +39,7 @@ export class FuelWatchService {
     // dont need it if this is hosted online, and in production
     var apiurl: string = environment.production ? this.fuelWatchURL : this.CORS_PROXY + this.fuelWatchURL;
     var albums_url: string = "https://jsonplaceholder.typicode.com/albums";
-    var a = this.http.get<any>(apiurl).pipe(
+    var a = this.http.get<any>(albums_url).pipe(
       tap(data => {
         console.log('All data: ', data);
         console.log('All: ' + JSON.stringify(data));
