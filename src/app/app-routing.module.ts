@@ -15,12 +15,12 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/',
+    redirectTo: '/FuelSaver',
     pathMatch: 'full'
   },
   {
     path: '**',
-    redirectTo: '/',
+    redirectTo: '/FuelSaver',
     pathMatch: 'full'
   }
 ];
