@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  lastUpdated: new Date(),
   environmentName: "Development",
   CompanyName: "Actilogic",
   AuthorName: "Antonio Joboy"

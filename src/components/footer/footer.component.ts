@@ -10,7 +10,6 @@ export class FooterComponent implements OnInit {
 
   a = 123;
   public environment = environment;
-  public lastUpdated = new Date();
   public year = new Date().getFullYear()
 
 
