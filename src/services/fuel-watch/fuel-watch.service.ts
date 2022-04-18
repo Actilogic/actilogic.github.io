@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 import { FuelWatchFeed } from 'src/models/fuelwatchfeed.model';
 import { conditionallyCreateMapObjectLiteral } from '@angular/compiler/src/render3/view/util';
 import { BehaviorSubject, observable, Observable, Subject, throwError } from 'rxjs';
-import { List } from 'immutable';
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class FuelWatchService {
   private ngxXml2jsonService: NgxXml2jsonService = new NgxXml2jsonService();
   private _allLocations: BehaviorSubject<FuelWatchFeed> = new BehaviorSubject(new FuelWatchFeed());
 
-  public readonly allLocations: Observable<FuelWatchFeed> = this._allLocations.asObservable();
+  private allLocations: Observable<FuelWatchFeed> = this._allLocations.asObservable();
 
 
   constructor(
@@ -36,37 +36,35 @@ export class FuelWatchService {
     // To get around this, you can use a proxy.
     // dont need it if this is hosted online, and in production
     var apiurl: string = environment.production ? this.fuelWatchURL : this.CORS_PROXY + this.fuelWatchURL;
-    var behaviorSubject = new BehaviorSubject(null);
-    let currentValue = behaviorSubject.getValue();
-    behaviorSubject.subscribe(value => console.log('Received new subject value: '))
-    console.log(behaviorSubject);
 
     console.log("calling it yeet");
-    this.http.get<any>(apiurl).subscribe(
-      (response) => {                           //Next callback
-        var obj: any = this.parseXML(response);
-        console.log("making the local _allLocations into the feed")
-        this._allLocations = new BehaviorSubject(obj.rss.channel);
-      },
-      (error) => {                              //Error callback
-        if (!environment.production) {
+    return this.http.get<any>(apiurl);
 
-          var response: string = error.error.text;
-          var obj: any = this.parseXML(response)
-          console.log("making the local _allLocations into the feed")
-          this._allLocations = new BehaviorSubject(obj.rss.channel);
-        } else {
-          console.error("an error has occured when calling the fuel watch api")
-        }
+    // .subscribe(
+    //   (response) => {                           //Next callback
+    //     var obj: any = this.parseXML(response);
+    //     console.log("making the local _allLocations into the feed from success message")
+    //     this._allLocations = new BehaviorSubject(obj.rss.channel);
+    //   },
+    //   (error) => {                              //Error callback
+    //     if (!environment.production) {
 
-        //throw error;   //You can also throw the error to a global error handler
-      }
-    )
-    console.log("called it yeet");
-    console.log("response data", this._allLocations);
-    console.log("response error", this.allLocations);
+    //       var response: string = error.error.text;
+    //       var obj: any = this.parseXML(response)
+    //       console.log("making the local _allLocations into the feed from error message")
+    //       this._allLocations = new BehaviorSubject(obj.rss.channel);
+    //       console.log("_ allLocations", this._allLocations);
+    //       this.allLocations = this._allLocations.asObservable()
+    //       console.log("allLocations", this.allLocations);
+    //     } else {
+    //       console.error("an error has occured when calling the fuel watch api")
+    //     }
 
-    return this.allLocations;
+    //     //throw error;   //You can also throw the error to a global error handler
+    //   }
+    // )
+    // console.log("called it yeet");
+    // return this.allLocations;
 
   }
   public asObservable(subject: any) {
