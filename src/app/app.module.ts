@@ -10,13 +10,15 @@ import { HomeComponent } from '../components/home/home.component';
 import { FuelSaverComponent } from '../components/fuel-saver/fuel-saver.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from '../components/footer/footer.component';
+import { FuelMapComponent } from '../components/fuel-map/fuel-map.component';
 @NgModule({
   declarations: [
     AppComponent,
     NavigationBarComponent,
     HomeComponent,
     FuelSaverComponent,
-    FooterComponent
+    FooterComponent,
+    FuelMapComponent
   ],
   imports: [
     BrowserModule,

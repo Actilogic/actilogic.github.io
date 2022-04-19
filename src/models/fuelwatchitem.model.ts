@@ -16,6 +16,26 @@ class FuelWatchItem {
 
     constructor(
     ) { }
+
+    public toString() {
+        var text = `
+            title: ${this.title},"\n",
+            description: ${this.description},"\n",
+            brand: ${this.brand},"\n",
+            date: ${this.date},"\n",
+            price: ${this.price},"\n",
+            trading: ${this.trading},"\n",
+            location: ${this.location},"\n",
+            address: ${this.address},"\n",
+            phone: ${this.phone},"\n",
+            latitude: ${this.latitude},"\n",
+            longitude: ${this.longitude},"\n",
+            siteFeatures: ${this.siteFeatures},"\n","\n"
+        `;
+        console.log(text);
+        return text;
+    }
+
 }
 
 //now that we have the model class we can create arrays that contain fuelwatch class elements

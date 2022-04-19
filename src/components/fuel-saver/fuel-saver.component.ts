@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FuelWatchService } from '../../services/fuel-watch/fuel-watch.service';
 import { environment } from 'src/environments/environment';
 import { FuelWatchFeed } from 'src/models/fuelwatchfeed.model';
+import { NgxXml2jsonService } from 'ngx-xml2json';
 
 @Component({
   selector: 'app-fuel-saver',
@@ -11,7 +12,9 @@ import { FuelWatchFeed } from 'src/models/fuelwatchfeed.model';
 export class FuelSaverComponent implements OnInit {
 
   public environment = environment;
-  public FuelWatchFeedList: FuelWatchFeed | null = null;
+  public FuelWatchFeedList: FuelWatchFeed = null;
+  private ngxXml2jsonService: NgxXml2jsonService = new NgxXml2jsonService();
+  public Feed: FuelWatchFeed = new FuelWatchFeed({});
 
 
   constructor(
@@ -19,29 +22,45 @@ export class FuelSaverComponent implements OnInit {
     private FuelWatchService: FuelWatchService,
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    await this.loadData();
   }
 
-  loadData() {
-    this.FuelWatchService.get().subscribe({
-      next: albums => {
-        console.log("this is htere1", this.FuelWatchFeedList);
-        console.log("this is alnus", albums);
-        this.FuelWatchFeedList = <FuelWatchFeed><unknown>albums;
-        console.log("this is htere2", this.FuelWatchFeedList);
+  async loadData() {
+    console.log("loading the fuel watch Feed");
+    this.FuelWatchService.get().subscribe(
+      (success) => {
+        var response = success.rss.channel;                      //Next callback
+        var parsedXMLResponse: any = this.parseXML<FuelWatchFeed>(response)
+        // console.log("making the local _allLocations into the Feed from success message", <FuelWatchFeed>obj.rss.channel)
+        var feedJSON = parsedXMLResponse.rss.channel
+        this.Feed = <FuelWatchFeed>feedJSON;
+      },
+      (error) => {                              //Error callback
+        if (!environment.production) {
+          var response: string = error.error.text;
+          var parsedXMLResponse: any = this.parseXML<FuelWatchFeed>(response)
+          console.log("thisis the parsed xml", parsedXMLResponse);
+          var feedJSON = parsedXMLResponse.rss.channel
+          console.log("thisis the specific object i want", feedJSON);
+          this.Feed = feedJSON as FuelWatchFeed;
+          console.log("thisis the type of the Feed", typeof (this.Feed));
+          console.log("this is what i want to return ", new FuelWatchFeed(feedJSON));
+          console.log("this is the to string", this.Feed.title, this.Feed.description,this.Feed.toString());
+        } else {
+          alert("Error in loading the");
+          console.error("Error in loading the fuel watch rss Feed");
+        }
+
       }
-    })
-    console.log("this is htere2", this.FuelWatchFeedList);
-    // .subscribe(
-    //   success => { console.log("this is what i want, success in loading component", success); },
-    //   error => {
-    //     if (!environment.production) {
-    //       console.log(" failed in the component but because its run locaally", error);
-    //     } else {
-    //       console.log("calling the api has failed in the component", error);
-    //     }
-    //   }
-    // );
+    )
+  }
+
+  public parseXML<T>(xmlString: string): T {
+    var parser = new DOMParser();
+    var xml = parser.parseFromString(xmlString, 'text/xml');
+    var obj = <T>this.ngxXml2jsonService.xmlToJson(xml);
+    return obj;
   }
 
 }
