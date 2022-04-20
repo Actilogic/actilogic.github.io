@@ -5,7 +5,7 @@
 @REM back up code to master which will then be up to date with prod
 git pull
 git add --all
-git commit -m "%date%"
+git commit -m "%time%"
 git push
 
 
