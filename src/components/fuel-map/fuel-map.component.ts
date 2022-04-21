@@ -20,39 +20,7 @@ export class FuelMapComponent implements OnInit {
   zoom = 12
   @Input() feed = {};
 
-  private geojson = {
-    type: 'FeatureCollection',
-    features: [
-      {
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [
-            this.lng,
-            this.lat
-          ]
-        },
-        properties: {
-          title: 'Mapbox',
-          description: 'Washington, D.C.'
-        }
-      },
-      {
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [
-            115.8213,
-            this.lat
-          ]
-        },
-        properties: {
-          title: 'Mapbox',
-          description: 'San Francisco, California'
-        }
-      }
-    ]
-  };
+  private geojson = {};
 
   constructor() {
     mapboxgl.accessToken = environment.mapbox.accessToken;
@@ -94,10 +62,36 @@ export class FuelMapComponent implements OnInit {
       );
     });
 
-    // console.log("loaded the map, loading the markers");
-    // this.addMarkers(geojson)
-    // // this.map.buildMap();
-    // // this.map.addMarkers(geojson);
+    // When a click event occurs on a feature in the stations layer, open a popup at the
+    // location of the feature, with description HTML from its properties.
+    this.map.on('click', 'stations', (station) => {
+      console.log(station.features[0]);
+      // Copy coordinates array.
+      const coordinates = station.features[0].geometry.coordinates.slice();
+      const descriptionHTML = JSON.parse(station.features[0].properties.popup).html;
+
+      // Ensure that if the map is zoomed out such that multiple
+      // copies of the feature are visible, the popup appears
+      // over the copy being pointed to.
+      while (Math.abs(station.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += station.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
+
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(descriptionHTML)
+        .addTo(this.map);
+    });
+
+    // Change the cursor to a pointer when the mouse is over the stations layer.
+    this.map.on('mouseenter', 'stations', () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    this.map.on('mouseleave', 'stations', () => {
+      this.map.getCanvas().style.cursor = '';
+    });
 
   }
 
@@ -108,7 +102,7 @@ export class FuelMapComponent implements OnInit {
         //   console.log('Previous:', changes[property].previousValue);
         //   console.log('Current:', changes[property].currentValue);
         //   console.log('firstChange:', changes[property].firstChange);
-        this.geojson = this.FuelWatchFeedtoGeoJSON(changes[property].currentValue);
+        this.FuelWatchFeedtoGeoJSON(changes[property].currentValue);
         this.addMarkers();
       }
     }
@@ -122,48 +116,29 @@ export class FuelMapComponent implements OnInit {
 
     if (fuelStationsLayer) {
       fuelStationsLayer.setData(this.geojson)
-
-      // Add a layer to use the image to represent the data.
-      this.map.addLayer({
-        'id': 'points',
-        'type': 'symbol',
-        'source': 'fuelStations', // reference the data source
-        'layout': {
-          'icon-image': 'cat', // reference the image
-          'icon-size': 0.1
-        }
-      })
     }
     else {
-
       // Add a data source containing one point feature.
       this.map.addSource('fuelStations', {
         'type': 'geojson',
         'data': this.geojson
       });
 
-      // Add a layer to use the image to represent the data.
-      this.map.addLayer({
-        'id': 'points',
-        'type': 'symbol',
-        'source': 'fuelStations', // reference the data source
-        'layout': {
-          'icon-image': 'cat', // reference the image
-          'icon-size': 0.1
-        }
-      });
     }
 
+    // Add a layer to use the image to represent the data.
+    this.map.addLayer({
+      'id': 'stations',
+      'type': 'symbol',
+      'source': 'fuelStations', // reference the data source
+      'layout': {
+        'icon-image': 'cat', // reference the image
+        'icon-size': 0.1
+      }
+    });
 
   }
 
-  // for (const feature of this.geojson.features) {
-  //   // create a HTML element for each feature
-  //   const el = document.createElement('div');
-  //   el.className = 'marker';
-  //   // make a marker for each feature and add to the map
-  //   new mapboxgl.Marker(el).setLngLat(feature.geometry.coordinates).addTo(this.map);
-  // }
 
   FuelWatchFeedtoGeoJSON(feed: FuelWatchFeed) {
     var outGeoJson = {
@@ -172,7 +147,6 @@ export class FuelMapComponent implements OnInit {
     };
 
     feed.item.forEach((fuelStation) => {
-      console.log("this is the individual items in the list", fuelStation);
       outGeoJson.features.push(
         {
           type: 'Feature',
@@ -186,24 +160,27 @@ export class FuelMapComponent implements OnInit {
           properties: {
             title: fuelStation.title,
             description: fuelStation.description,
-            icon: {
-              className: 'my-icon icon-dc', // class name to style
-              html: 'asdfasdf', // add content inside the marker, in this case a star
-              iconSize: null // size of icon, use null to set the size in CSS
+            popup: {
+              html: this.toPopUp(fuelStation), // add content inside the marker, in this case a star
             },
-            'marker-color': '#3bb2d0',
-            'marker-size': 'large',
-            'marker-symbol': 'rocket'
           }
         }
       );
-      console.log("this is the geojson", outGeoJson)
     }
     )
 
-    return outGeoJson;
+    this.geojson = outGeoJson;
 
   }
 
+  toPopUp(fuelStation): string {
+    var outPopUp: string = "";
+
+
+
+
+    
+    return outPopUp
+  }
 
 }
