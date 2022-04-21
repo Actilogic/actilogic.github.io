@@ -5,7 +5,9 @@ import * as mapboxgl from 'mapbox-gl';
 import { environment } from "../../environments/environment";
 import { FuelWatchFeed } from 'src/models/fuelwatchfeed.model';
 import { FuelWatchItem } from 'src/models/fuelwatchitem.model';
-
+import { PopupComponent } from "../popup/popup.component";
+import { DynamicComponentService } from "../../services/DynamicComponent/dynamic-component.service";
+import { LocationService } from '../../services/location/location.service';
 @Component({
   selector: 'app-fuel-map',
   templateUrl: './fuel-map.component.html',
@@ -21,8 +23,11 @@ export class FuelMapComponent implements OnInit {
   @Input() feed = {};
 
   private geojson = {};
+  private dynamicComponentService: DynamicComponentService;
+  private locationService: LocationService = new LocationService();
 
-  constructor() {
+  constructor(
+  ) {
     mapboxgl.accessToken = environment.mapbox.accessToken;
   }
 
@@ -43,6 +48,10 @@ export class FuelMapComponent implements OnInit {
           ]
       }
     );
+
+
+    this.getLocation();
+
     this.map.addControl(
       new mapboxgl.NavigationControl()
     );
@@ -55,9 +64,21 @@ export class FuelMapComponent implements OnInit {
           if (error) throw error;
           // Add the image to the this.map style.
           this.map.addImage('cat', image);
-          this.addMarkers();
+          this.addFuelStations();
         }
       );
+
+      // load user image 
+      this.map.loadImage(
+        'https://docs.mapbox.com/mapbox-gl-js/assets/cat.png',
+        (error, image) => {
+          if (error) throw error;
+          // Add the image to the this.map style.
+          this.map.addImage('cat', image);
+          this.addFuelStations();
+        }
+      );
+
     });
 
     // When a click event occurs on a feature in the stations layer, open a popup at the
@@ -80,6 +101,22 @@ export class FuelMapComponent implements OnInit {
         .setLngLat(coordinates)
         .setHTML(descriptionHTML)
         .addTo(this.map);
+
+
+      // //-----------------------
+      // // This is the test for the popup
+      // //-----------------------
+
+      // // Inject Component and Render Down to HTMLDivElement Object
+      // let popupContent = this.dynamicComponentService.injectComponent(PopupComponent);
+
+      // console.log(popupContent);
+      // new mapboxgl.Popup({ closeOnClick: false })
+      //   .setLngLat(coordinates)
+      //   .setHTML(popupContent)
+      //   .addTo(this.map);
+
+
     });
 
     // Change the cursor to a pointer when the mouse is over the stations layer.
@@ -102,14 +139,32 @@ export class FuelMapComponent implements OnInit {
         //   console.log('Current:', changes[property].currentValue);
         //   console.log('firstChange:', changes[property].firstChange);
         this.FuelWatchFeedtoGeoJSON(changes[property].currentValue);
-        this.addMarkers();
+        this.addFuelStations();
       }
     }
   }
 
 
 
-  addMarkers() {
+  addUser() {
+    // Add a layer to use the image to represent the data.
+    this.map.addLayer({
+      'id': 'stations',
+      'type': 'symbol',
+      'source': 'fuelStations', // reference the data source
+      'layout': {
+        'icon-image': 'cat', // reference the image
+        'icon-size': 0.1
+      }
+    });
+
+    this.map.addSource('fuelStations', {
+      'type': 'geojson',
+      'data': this.geojson
+    });
+  }
+
+  addFuelStations() {
     console.log("adding from this", this.geojson)
     var fuelStationsLayer = this.map.getSource('fuelStations');
 
@@ -257,6 +312,7 @@ export class FuelMapComponent implements OnInit {
         </div>
     </div>
 </div>
+<app-popup></app-popup>
 
 
 <script>
@@ -280,5 +336,11 @@ function handleClick() {
   }
 
   testMap() { alert("clicked the calc button on popup") }
+
+  getLocation() {
+    this.locationService.getPosition().then(pos => {
+      console.log(`Positon: ${pos.lng} ${pos.lat}`);
+    });
+  }
 
 }
