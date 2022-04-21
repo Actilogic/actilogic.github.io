@@ -1,13 +1,17 @@
-@import "https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css";
+#map-container {
+  top: 10; 
+  bottom: 0; 
+}
 
-.map-container {
-    width:  600px;
-    height: 600px;
-    position: absolute;
+#map { 
+  position: absolute; 
+  top: 0; 
+  bottom: 0; 
+  width: 100%; 
 }
 
 .marker {
-  background-image: url('../../assets/icons/icon-72x72.png');
+  background-image: url('../../assets/Mapbox-marker/icon-72x72.png');
   background-size: cover;
   width: 50px;
   height: 50px;

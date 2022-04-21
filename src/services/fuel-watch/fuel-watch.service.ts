@@ -30,6 +30,7 @@ export class FuelWatchService {
 
 
   public static test() {
+
     console.log("test function called");
     return "this is the returened data from test";
   }

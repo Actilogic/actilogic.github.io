@@ -27,12 +27,10 @@ export class FuelSaverComponent implements OnInit {
   }
 
   async loadData() {
-    console.log("loading the fuel watch Feed");
     this.FuelWatchService.get().subscribe(
       (success) => {
         var response = success.rss.channel;                      //Next callback
         var parsedXMLResponse: any = this.parseXML<FuelWatchFeed>(response)
-        // console.log("making the local _allLocations into the Feed from success message", <FuelWatchFeed>obj.rss.channel)
         var feedJSON = parsedXMLResponse.rss.channel
         this.Feed = <FuelWatchFeed>feedJSON;
       },
@@ -40,13 +38,8 @@ export class FuelSaverComponent implements OnInit {
         if (!environment.production) {
           var response: string = error.error.text;
           var parsedXMLResponse: any = this.parseXML<FuelWatchFeed>(response)
-          console.log("thisis the parsed xml", parsedXMLResponse);
           var feedJSON = parsedXMLResponse.rss.channel
-          console.log("thisis the specific object i want", feedJSON);
           this.Feed = feedJSON as FuelWatchFeed;
-          console.log("thisis the type of the Feed", typeof (this.Feed));
-          console.log("this is what i want to return ", new FuelWatchFeed(feedJSON));
-          console.log("this is the to string", this.Feed.title, this.Feed.description,this.Feed.toString());
         } else {
           alert("Error in loading the");
           console.error("Error in loading the fuel watch rss Feed");
