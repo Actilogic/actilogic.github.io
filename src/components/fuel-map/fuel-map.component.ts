@@ -4,7 +4,7 @@ import { MapService } from 'src/services/map/map.service';
 import * as mapboxgl from 'mapbox-gl';
 import { environment } from "../../environments/environment";
 import { FuelWatchFeed } from 'src/models/fuelwatchfeed.model';
-
+import { FuelWatchItem } from 'src/models/fuelwatchitem.model';
 
 @Component({
   selector: 'app-fuel-map',
@@ -53,10 +53,8 @@ export class FuelMapComponent implements OnInit {
         'https://docs.mapbox.com/mapbox-gl-js/assets/cat.png',
         (error, image) => {
           if (error) throw error;
-
           // Add the image to the this.map style.
           this.map.addImage('cat', image);
-
           this.addMarkers();
         }
       );
@@ -65,10 +63,11 @@ export class FuelMapComponent implements OnInit {
     // When a click event occurs on a feature in the stations layer, open a popup at the
     // location of the feature, with description HTML from its properties.
     this.map.on('click', 'stations', (station) => {
-      console.log(station.features[0]);
+
       // Copy coordinates array.
       const coordinates = station.features[0].geometry.coordinates.slice();
       const descriptionHTML = JSON.parse(station.features[0].properties.popup).html;
+      console.log(station.features[0]);
 
       // Ensure that if the map is zoomed out such that multiple
       // copies of the feature are visible, the popup appears
@@ -161,26 +160,125 @@ export class FuelMapComponent implements OnInit {
             title: fuelStation.title,
             description: fuelStation.description,
             popup: {
-              html: this.toPopUp(fuelStation), // add content inside the marker, in this case a star
+              html: this.toPopup(fuelStation), // add content inside the marker, in this case a star
             },
           }
         }
       );
     }
+
     )
+
+
 
     this.geojson = outGeoJson;
 
   }
 
-  toPopUp(fuelStation): string {
-    var outPopUp: string = "";
+  toPopup(fuelStation: FuelWatchItem): string {
+    var outPopUp: string = `
+    <div class="simplebar-content" style="padding: 0px;">
+    <div class="fuel-station__name-wrapper">
+        <div class="container-fluid">
+
+            <div class="row position-relative">
+                <div class="col-8 col-lg-9">
+                    <div>
+                        <h2>${fuelStation["trading-name"]}</h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="fuel-station__address-wrapper">
+
+        <hr class="divider">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <span>Address: ${fuelStation.address}</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="fuel-station__contact-number">
+                        Call: <a href="tel:${fuelStation.phone}">${fuelStation.phone}</a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="divider">
+
+        </div>
+
+    </div>
+
+    <div class="fuel-station__pricing-wrapper ng-star-inserted">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <h4 class="fuel-price__title">ULP prices</h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 ng-star-inserted">
+                    <div>
+                        <p class="h2">
+                            ${fuelStation.price}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fuel-station__direction-wrapper ng-star-inserted">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <button id="calcCost" 
+                        <span class="mat-button-wrapper">
+                            Directions
+                            <mat-icon role="img" class="mat-icon notranslate material-icons mat-icon-no-color"
+                                aria-hidden="true" data-mat-icon-type="font">
+                                directions
+                            </mat-icon>
+                        </span>
+                        <span matripple="" class="mat-ripple mat-button-ripple"></span>
+                        <span class="mat-button-focus-overlay"> </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+const btn = document.getElementById("calcCost");
+btn.addEventListener("click", handleClick);
+
+function handleClick() {
+  console.log("hello");
+  console.log("this is the popup", this);
+  alert("hello");
+};
+
+</script>
+` ;
 
 
 
 
-    
     return outPopUp
   }
+
+  testMap() { alert("clicked the calc button on popup") }
 
 }

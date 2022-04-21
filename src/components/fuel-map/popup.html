@@ -1,0 +1,81 @@
+<div class="simplebar-content" style="padding: 0px;">
+    <div class="fuel-station__name-wrapper">
+        <div class="container-fluid">
+
+            <div class="row position-relative">
+                <div class="col-8 col-lg-9">
+                    <div>
+                        <h2>${fuelStation["trading-name"]}</h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="fuel-station__address-wrapper">
+
+        <hr class="divider">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <span>Address: ${fuelStation.address}</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="fuel-station__contact-number">
+                        Call: <a href="tel:${fuelStation.phone}">${fuelStation.phone}</a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="divider">
+
+        </div>
+
+    </div>
+
+    <div class="fuel-station__pricing-wrapper ng-star-inserted">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <h4 class="fuel-price__title">ULP prices</h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 ng-star-inserted">
+                    <div>
+                        <p class="h2">
+                            ${fuelStation.price}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fuel-station__direction-wrapper ng-star-inserted">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <button mat-flat-button="" disableripple="" color="primary"
+                        class="mat-focus-indicator btn--primary mat-flat-button mat-button-base mat-primary">
+                        <span class="mat-button-wrapper">
+                            Directions
+                            <mat-icon role="img" class="mat-icon notranslate material-icons mat-icon-no-color"
+                                aria-hidden="true" data-mat-icon-type="font">
+                                directions
+                            </mat-icon>
+                        </span>
+                        <span matripple="" class="mat-ripple mat-button-ripple"></span>
+                        <span class="mat-button-focus-overlay"> </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
