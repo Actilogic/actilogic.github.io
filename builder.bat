@@ -1,2 +1,2 @@
-npm install 
+@REM npm install 
 ng build
