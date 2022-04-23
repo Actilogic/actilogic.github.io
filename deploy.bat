@@ -2,7 +2,9 @@
 @REM build the app
 @REM builder.bat
 
-@REM back up code to master which will then be up to date with prod
+@REM make the 404 file which makes it show any page for gihub pages
+copy docs/index.html docs/404.html
+
 git pull
 git add --all
 git commit -m "%time%"

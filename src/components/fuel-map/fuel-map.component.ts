@@ -6,8 +6,8 @@ import { environment } from "../../environments/environment";
 import { FuelWatchFeed } from 'src/models/fuelwatchfeed.model';
 import { FuelWatchItem } from 'src/models/fuelwatchitem.model';
 import { PopupComponent } from "../popup/popup.component";
-import { DynamicComponentService } from "../../services/DynamicComponent/dynamic-component.service";
 import { LocationService } from '../../services/location/location.service';
+import { retry } from 'rxjs-compat/operator/retry';
 @Component({
   selector: 'app-fuel-map',
   templateUrl: './fuel-map.component.html',
@@ -16,14 +16,16 @@ import { LocationService } from '../../services/location/location.service';
 
 export class FuelMapComponent implements OnInit {
   map: mapboxgl.Map;
-  style = 'mapbox://styles/mapbox/navigation-night-v1';
+  // style = 'mapbox://styles/mapbox/navigation-night-v1';
+  style = 'mapbox://styles/mapbox/outdoors-v11';
   lat = -31.9523;
   lng = 115.8613;
-  zoom = 12
+  perth = [this.lng, this.lat];
+  currentLocation = this.perth;
+  zoom = 13;
   @Input() feed = {};
 
   private geojson = {};
-  private dynamicComponentService: DynamicComponentService;
   private locationService: LocationService = new LocationService();
 
   constructor(
@@ -37,14 +39,13 @@ export class FuelMapComponent implements OnInit {
 
     // build map
     var currentLocation = this.getLocation();
-    setTimeout(() => { }, 100000)
-    alert("building");
+    setTimeout(() => { }, 10)
     this.map = new mapboxgl.Map(
       {
         container: 'map',
         style: this.style,
         zoom: this.zoom,
-        center: currentLocation
+        center: this.currentLocation
       }
     );
 
@@ -75,6 +76,15 @@ export class FuelMapComponent implements OnInit {
           this.addFuelStations();
         }
       );
+
+
+      // // load the user location
+      // if (navigator.geolocation) {
+      //   console.log("before flying ", this.currentLocation);
+      //   navigator.geolocation.getCurrentPosition(this.goTo);
+
+      // }
+
 
     });
 
@@ -127,6 +137,22 @@ export class FuelMapComponent implements OnInit {
     });
 
   }
+
+  goTo(location) {
+    console.log("location", location);
+    // var currentLocation = [location.coords.longitude, location.coords.latitude];
+
+    console.log("about to fly to 1", location);
+
+    this.map.flyTo({
+      center: location,
+      zoom: this.zoom + 5,
+      essential: true // this animation is considered essential with respect to prefers-reduced-motion
+    });
+
+    console.log("flew");
+  }
+
 
   ngOnChanges(changes: SimpleChanges) {
 
@@ -337,8 +363,9 @@ function handleClick() {
   getLocation() {
     this.locationService.getPosition().then(pos => {
       console.log(`Positon: ${pos.lng} ${pos.lat}`);
-      alert(`you are located at: ${pos.lng} ${pos.lat}`);
-      return [pos.lng, pos.lat]
+      // alert(`you are located at: ${pos.lat} ${pos.lng}`);
+      this.currentLocation = [pos.lng, pos.lat]
+      this.goTo(this.currentLocation)
     });
   }
 
