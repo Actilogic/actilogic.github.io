@@ -36,21 +36,18 @@ export class FuelMapComponent implements OnInit {
     // console.log("this is the feed that came from the feulsaver and now is in the map compont:", this.feed);
 
     // build map
+    var currentLocation = this.getLocation();
+    setTimeout(() => { }, 5)
+    alert("building");
     this.map = new mapboxgl.Map(
       {
         container: 'map',
         style: this.style,
         zoom: this.zoom,
-        center:
-          [
-            this.lng,
-            this.lat
-          ]
+        center: currentLocation
       }
     );
 
-
-    this.getLocation();
 
     this.map.addControl(
       new mapboxgl.NavigationControl()
@@ -340,6 +337,8 @@ function handleClick() {
   getLocation() {
     this.locationService.getPosition().then(pos => {
       console.log(`Positon: ${pos.lng} ${pos.lat}`);
+      alert(`you are located at: ${pos.lng} ${pos.lat}`);
+      return [pos.lng, pos.lat]
     });
   }
 
