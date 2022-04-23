@@ -37,7 +37,7 @@ export class FuelMapComponent implements OnInit {
 
     // build map
     var currentLocation = this.getLocation();
-    setTimeout(() => { }, 5)
+    setTimeout(() => { }, 100000)
     alert("building");
     this.map = new mapboxgl.Map(
       {
