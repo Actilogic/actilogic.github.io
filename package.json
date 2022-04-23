@@ -51,7 +51,7 @@
     "@angular/cli": "~12.2.2",
     "@angular/compiler-cli": "~12.2.0",
     "@types/jasmine": "~3.8.0",
-    "@types/node": "^12.20.47",
+    "@types/node": "^12.20.48",
     "@types/xml2js": "^0.4.9",
     "@types/xml2json": "^0.11.4",
     "jasmine-core": "~3.8.0",

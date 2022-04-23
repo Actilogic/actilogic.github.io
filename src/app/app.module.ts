@@ -12,6 +12,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from '../components/footer/footer.component';
 import { FuelMapComponent } from '../components/fuel-map/fuel-map.component';
 import { PopupComponent } from '../components/popup/popup.component';
+
+declare var require: any;
 @NgModule({
   declarations: [
     AppComponent,
