@@ -1,0 +1,1 @@
+https://freeicons.io/fuel-station-3/fuel-pump-icon-37082#

@@ -7,7 +7,8 @@ import { FuelWatchFeed } from 'src/models/fuelwatchfeed.model';
 import { FuelWatchItem } from 'src/models/fuelwatchitem.model';
 import { PopupComponent } from "../popup/popup.component";
 import { LocationService } from '../../services/location/location.service';
-import { retry } from 'rxjs-compat/operator/retry';
+import * as MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
+
 @Component({
   selector: 'app-fuel-map',
   templateUrl: './fuel-map.component.html',
@@ -16,14 +17,17 @@ import { retry } from 'rxjs-compat/operator/retry';
 
 export class FuelMapComponent implements OnInit {
   map: mapboxgl.Map;
-  // style = 'mapbox://styles/mapbox/navigation-night-v1';
-  style = 'mapbox://styles/mapbox/outdoors-v11';
+  style = 'mapbox://styles/mapbox/navigation-night-v1';
+  // style = 'mapbox://styles/mapbox/outdoors-v11';
   lat = -31.9523;
   lng = 115.8613;
   perth = [this.lng, this.lat];
   currentLocation = this.perth;
   zoom = 13;
   @Input() feed = {};
+  pumpIcon = '../../assets/Mapbox-marker/Fuel-Saver/pump-256x256.png';
+
+
 
   private geojson = {};
   private locationService: LocationService = new LocationService();
@@ -38,8 +42,6 @@ export class FuelMapComponent implements OnInit {
     // console.log("this is the feed that came from the feulsaver and now is in the map compont:", this.feed);
 
     // build map
-    var currentLocation = this.getLocation();
-    setTimeout(() => { }, 10)
     this.map = new mapboxgl.Map(
       {
         container: 'map',
@@ -49,15 +51,28 @@ export class FuelMapComponent implements OnInit {
       }
     );
 
-
+    // add navigation controls
     this.map.addControl(
       new mapboxgl.NavigationControl()
     );
 
+    // add the directions 
+    this.map.addControl(
+      new MapboxDirections({
+        accessToken: mapboxgl.accessToken,
+        unit: 'metric'
+      }),
+      'top-left'
+    );
+
+
     this.map.on('load', () => {
+      // Go to current locations
+      this.gotoCurrentLocation()
+
       // Load an image from an external URL.
       this.map.loadImage(
-        'https://docs.mapbox.com/mapbox-gl-js/assets/cat.png',
+        this.pumpIcon,
         (error, image) => {
           if (error) throw error;
           // Add the image to the this.map style.
@@ -67,23 +82,7 @@ export class FuelMapComponent implements OnInit {
       );
 
       // load user image 
-      this.map.loadImage(
-        'https://docs.mapbox.com/mapbox-gl-js/assets/cat.png',
-        (error, image) => {
-          if (error) throw error;
-          // Add the image to the this.map style.
-          this.map.addImage('cat', image);
-          this.addFuelStations();
-        }
-      );
-
-
-      // // load the user location
-      // if (navigator.geolocation) {
-      //   console.log("before flying ", this.currentLocation);
-      //   navigator.geolocation.getCurrentPosition(this.goTo);
-
-      // }
+      this.addUser();
 
 
     });
@@ -146,7 +145,7 @@ export class FuelMapComponent implements OnInit {
 
     this.map.flyTo({
       center: location,
-      zoom: this.zoom + 5,
+      zoom: this.zoom + 3,
       essential: true // this animation is considered essential with respect to prefers-reduced-motion
     });
 
@@ -170,21 +169,32 @@ export class FuelMapComponent implements OnInit {
 
 
   addUser() {
+    this.map.loadImage(
+      this.pumpIcon,
+      (error, image) => {
+        this.map.addImage('pump', image);
+        console.log("images load for pump", image);
+      }
+    );
+
     // Add a layer to use the image to represent the data.
     this.map.addLayer({
-      'id': 'stations',
+      'id': 'z',
       'type': 'symbol',
       'source': 'fuelStations', // reference the data source
       'layout': {
-        'icon-image': 'cat', // reference the image
+        'icon-image': 'pump', // reference the image
         'icon-size': 0.1
       }
     });
 
-    this.map.addSource('fuelStations', {
-      'type': 'geojson',
-      'data': this.geojson
-    });
+
+    // this.map.addSource("myImageSource", {
+    //   "type": "image",
+    //   "url": this.pumpIcon,
+    //   "coordinates": this.geojson
+    // });
+
   }
 
   addFuelStations() {
@@ -358,14 +368,22 @@ function handleClick() {
     return outPopUp
   }
 
-  testMap() { alert("clicked the calc button on popup") }
+  testMap() {
+    alert("clicked the calc button on popup")
+  }
 
-  getLocation() {
+  gotoCurrentLocation() {
     this.locationService.getPosition().then(pos => {
       console.log(`Positon: ${pos.lng} ${pos.lat}`);
       // alert(`you are located at: ${pos.lat} ${pos.lng}`);
       this.currentLocation = [pos.lng, pos.lat]
       this.goTo(this.currentLocation)
+    });
+  }
+
+  getLocation() {
+    this.locationService.getPosition().then(pos => {
+      console.log(`Positon: ${pos.lng} ${pos.lat}`);
     });
   }
 

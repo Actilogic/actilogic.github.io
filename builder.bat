@@ -1,3 +1,3 @@
 @REM npm install 
+npm run build
 ng build
-copy docs/index.html docs/404.html
