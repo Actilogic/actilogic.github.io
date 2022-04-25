@@ -1,6 +1,6 @@
 {
   "name": "actilogic",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "browser": {
     "http": false,
     "https": false
@@ -20,6 +20,7 @@
     "@angular/compiler": "~13.3.4",
     "@angular/core": "~13.3.4",
     "@angular/forms": "~13.3.4",
+    "@angular/google-maps": "^13.3.4",
     "@angular/http": "^7.2.16",
     "@angular/platform-browser": "~13.3.4",
     "@angular/platform-browser-dynamic": "~13.3.4",

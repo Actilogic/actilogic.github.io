@@ -13,6 +13,7 @@ import * as MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-d
 import { PopupComponent } from "../popup/popup.component";
 import { DynamicComponentService } from "../../services/dynamic-component/dynamic-component.service";
 import { FactoryTarget } from '@angular/compiler';
+import { stat } from 'fs';
 
 
 @Component({
@@ -25,7 +26,7 @@ export class FuelMapComponent implements OnInit {
   map: mapboxgl.Map;
   // style = 'mapbox://styles/mapbox/navigation-night-v1';
   // style = 'mapbox://styles/mapbox/outdoors-v11';
-  style = 'mapbox://styles/antoniojoboy/cl2569rep000415mf7upq7j1m/draft';
+  style = 'mapbox://styles/antoniojoboy/cl2569rep000415mf7upq7j1m';
   lat = -31.9523;
   lng = 115.8613;
   perth = [this.lng, this.lat];
@@ -91,7 +92,7 @@ export class FuelMapComponent implements OnInit {
         (error, image) => {
           if (error) throw error;
           // Add the image to the this.map style.
-          this.map.addImage('cat', image);
+          this.map.addImage('pump', image);
           this.addFuelStations();
         }
       );
@@ -106,9 +107,16 @@ export class FuelMapComponent implements OnInit {
     this.map.on('click', 'stations', (station) => {
       // alert("station clicked");
       // // Copy coordinates array.
-      const coordinates = station.features[0].geometry.coordinates.slice();
-      const descriptionHTML = JSON.parse(station.features[0].properties.popup).html;
-      console.log(station.features[0]);
+      var coordinates = station.features[0].geometry.coordinates.slice();
+      var descriptionHTML = JSON.parse(station.features[0].properties.popup).html;
+      console.log("station.features[0]", station.features[0]);
+      var f = this.map.queryRenderedFeatures(station.point, { layers: ['stations'] });
+      var feature = f;
+      if (f.length) {
+        feature = f[0];
+      }
+
+
 
       // Ensure that if the map is zoomed out such that multiple
       // copies of the feature are visible, the popup appears
@@ -116,33 +124,39 @@ export class FuelMapComponent implements OnInit {
       while (Math.abs(station.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += station.lngLat.lng > coordinates[0] ? 360 : -360;
       }
-
-      // new mapboxgl.Popup()
-      //   .setLngLat(coordinates)
-      //   .setHTML(descriptionHTML)
-      //   .addTo(this.map);
-
-
       // //-----------------------
       // // This is the test for the popup
       // //-----------------------
 
       // Inside a map.on("click") or wherever you want to create your popup
 
-      // Inject Component and Render Down to HTMLDivElement Object
-      let popupContent = this.dynamicComponentService.injectComponent(
-        PopupComponent,
-        x => x.title = " new PopupComponent()"
-      ); // This Is where You can pass
-      // a Model or other Properties to your Component
+      // // Inject Component and Render Down to HTMLDivElement Object
+      // console.log("new PopupComponent()", descriptionHTML);
+      // let popupContent = this.dynamicComponentService.injectComponent(
+      //   PopupComponent,
+      //   popup => popup.title = " new PopupComponent()"
+      // ); // This Is where You can pass
+      // // a Model or other Properties to your Component
 
-      new mapboxgl.Popup({ closeOnClick: false })
+      console.log("feature()", feature);
+
+      var popup = new mapboxgl.Popup()
         .setLngLat(coordinates)
-        .setDOMContent(popupContent)
+        .setHTML(descriptionHTML)
         .addTo(this.map);
 
+      document.getElementById("calcCost").addEventListener("click", function () {
+        console.log("clicked a button");
+        console.log(feature);
+        testMap();
+      });
 
     });
+
+    function testMap() {
+      alert("are we there yet");
+      console.log("this.map", this.map);
+    };
 
     // Change the cursor to a pointer when the mouse is over the stations layer.
     this.map.on('mouseenter', 'stations', () => {
@@ -231,7 +245,7 @@ export class FuelMapComponent implements OnInit {
       'type': 'symbol',
       'source': 'fuelStations', // reference the data source
       'layout': {
-        'icon-image': 'cat', // reference the image
+        'icon-image': 'pump', // reference the image
         'icon-size': 0.1
       }
     });
@@ -356,20 +370,6 @@ export class FuelMapComponent implements OnInit {
     </div>
 </div>
 <app-popup></app-popup>
-
-
-<script>
-
-const btn = document.getElementById("calcCost");
-btn.addEventListener("click", handleClick);
-
-function handleClick() {
-  console.log("hello");
-  console.log("this is the popup", this);
-  alert("hello");
-};
-
-</script>
 ` ;
 
 
