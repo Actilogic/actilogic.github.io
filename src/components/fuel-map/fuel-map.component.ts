@@ -1,13 +1,19 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { MapService } from 'src/services/map/map.service';
+import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+// import { DynamicChildComponent } from './dynamic-child/dynamic-child.component';
+import { DynamicChildLoaderDirective } from '../../directives/load-child.directive';
 // remove later
 import * as mapboxgl from 'mapbox-gl';
 import { environment } from "../../environments/environment";
 import { FuelWatchFeed } from 'src/models/fuelwatchfeed.model';
 import { FuelWatchItem } from 'src/models/fuelwatchitem.model';
-import { PopupComponent } from "../popup/popup.component";
 import { LocationService } from '../../services/location/location.service';
 import * as MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
+
+// For the popup
+import { PopupComponent } from "../popup/popup.component";
+import { DynamicComponentService } from "../../services/dynamic-component/dynamic-component.service";
+import { FactoryTarget } from '@angular/compiler';
+
 
 @Component({
   selector: 'app-fuel-map',
@@ -24,22 +30,30 @@ export class FuelMapComponent implements OnInit {
   perth = [this.lng, this.lat];
   currentLocation = this.perth;
   zoom = 13;
-  @Input() feed = {};
   pumpIcon = '../../assets/Mapbox-marker/Fuel-Saver/pump-256x256.png';
 
-
+  private dynamicComponentService: DynamicComponentService
 
   private geojson = {};
+
   private locationService: LocationService = new LocationService();
+
+
+  @Input() feed = {};
+  @ViewChild(DynamicChildLoaderDirective, { static: true }) dynamicChild!: DynamicChildLoaderDirective;
 
   constructor(
   ) {
     mapboxgl.accessToken = environment.mapbox.accessToken;
   }
 
+  // private loadDynamicComponent() {
+  //   this.dynamicChild.viewContainerRef.createComponent(<FactoryTarget>PopupComponent);
+  // }
+
   ngOnInit() {
-    // this.test();
-    // console.log("this is the feed that came from the feulsaver and now is in the map compont:", this.feed);
+    // this.loadDynamicComponent();
+
 
     // build map
     this.map = new mapboxgl.Map(
@@ -84,14 +98,13 @@ export class FuelMapComponent implements OnInit {
       // load user image 
       this.addUser();
 
-
     });
 
     // When a click event occurs on a feature in the stations layer, open a popup at the
     // location of the feature, with description HTML from its properties.
     this.map.on('click', 'stations', (station) => {
-
-      // Copy coordinates array.
+      // alert("station clicked");
+      // // Copy coordinates array.
       const coordinates = station.features[0].geometry.coordinates.slice();
       const descriptionHTML = JSON.parse(station.features[0].properties.popup).html;
       console.log(station.features[0]);
@@ -103,24 +116,29 @@ export class FuelMapComponent implements OnInit {
         coordinates[0] += station.lngLat.lng > coordinates[0] ? 360 : -360;
       }
 
-      new mapboxgl.Popup()
-        .setLngLat(coordinates)
-        .setHTML(descriptionHTML)
-        .addTo(this.map);
+      // new mapboxgl.Popup()
+      //   .setLngLat(coordinates)
+      //   .setHTML(descriptionHTML)
+      //   .addTo(this.map);
 
 
       // //-----------------------
       // // This is the test for the popup
       // //-----------------------
 
-      // // Inject Component and Render Down to HTMLDivElement Object
-      // let popupContent = this.dynamicComponentService.injectComponent(PopupComponent);
+      // Inside a map.on("click") or wherever you want to create your popup
 
-      // console.log(popupContent);
-      // new mapboxgl.Popup({ closeOnClick: false })
-      //   .setLngLat(coordinates)
-      //   .setHTML(popupContent)
-      //   .addTo(this.map);
+      // Inject Component and Render Down to HTMLDivElement Object
+      let popupContent = this.dynamicComponentService.injectComponent(
+        PopupComponent,
+        x => x.title = " new PopupComponent()"
+      ); // This Is where You can pass
+      // a Model or other Properties to your Component
+
+      new mapboxgl.Popup({ closeOnClick: false })
+        .setLngLat(coordinates)
+        .setDOMContent(popupContent)
+        .addTo(this.map);
 
 
     });
@@ -188,13 +206,6 @@ export class FuelMapComponent implements OnInit {
       }
     });
 
-
-    // this.map.addSource("myImageSource", {
-    //   "type": "image",
-    //   "url": this.pumpIcon,
-    //   "coordinates": this.geojson
-    // });
-
   }
 
   addFuelStations() {
@@ -256,10 +267,8 @@ export class FuelMapComponent implements OnInit {
     }
 
     )
-
-
-
     this.geojson = outGeoJson;
+    console.log("this.geojson", this.geojson);
 
   }
 

@@ -8,6 +8,9 @@ import { Component, OnInit } from '@angular/core'
 
 export class PopupComponent implements OnInit {
   title: string = "this is the title of the popup";
+  model: PopupComponent;
+
+
   constructor(
   ) { }
 
@@ -17,4 +20,5 @@ export class PopupComponent implements OnInit {
 
   test() { alert("popupComponent works") }
 
-} 
+}
+
