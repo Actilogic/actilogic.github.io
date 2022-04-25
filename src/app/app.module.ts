@@ -22,7 +22,7 @@ declare var require: any;
     FuelSaverComponent,
     FooterComponent,
     FuelMapComponent,
-    PopupComponent
+    PopupComponent,
   ],
   imports: [
     BrowserModule,
