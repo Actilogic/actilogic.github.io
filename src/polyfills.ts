@@ -46,8 +46,8 @@
  * Zone JS is required by default for Angular itself.
  */
 import 'zone.js';  // Included with Angular CLI.
-import 'timers-browserify';  // Included with Angular CLI.
-import 'https-browserify';  // Included with Angular CLI.
+// import 'timers-browserify';  // Included with Angular CLI.
+// import 'https-browserify';  // Included with Angular CLI.
 
 
 /***************************************************************************************************

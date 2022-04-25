@@ -23,8 +23,9 @@ import { FactoryTarget } from '@angular/compiler';
 
 export class FuelMapComponent implements OnInit {
   map: mapboxgl.Map;
-  style = 'mapbox://styles/mapbox/navigation-night-v1';
+  // style = 'mapbox://styles/mapbox/navigation-night-v1';
   // style = 'mapbox://styles/mapbox/outdoors-v11';
+  style = 'mapbox://styles/antoniojoboy/cl2569rep000415mf7upq7j1m/draft';
   lat = -31.9523;
   lng = 115.8613;
   perth = [this.lng, this.lat];

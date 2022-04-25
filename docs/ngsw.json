@@ -1,0 +1,93 @@
+{
+  "configVersion": 1,
+  "timestamp": 1650881120791,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/favicon.ico",
+        "/index.html",
+        "/main.a4afc03889d45107.js",
+        "/manifest.webmanifest",
+        "/polyfills.e64c0c12fc79005e.js",
+        "/runtime.8c139eb370fbe5cc.js",
+        "/styles.a4ff2369078b4797.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/Mapbox-marker/Fuel-Saver/links.md",
+        "/assets/Mapbox-marker/Fuel-Saver/pump-256x256.png",
+        "/assets/Mapbox-marker/Fuel-Saver/pump-512x512.png",
+        "/assets/Mapbox-marker/Fuel-Saver/pump-512x512.svg",
+        "/assets/Mapbox-marker/Fuel-Saver/pump.png",
+        "/assets/Mapbox-marker/icon-72x72.png",
+        "/assets/Mapbox-marker/station.png",
+        "/assets/icons/icon-128x128.png",
+        "/assets/icons/icon-144x144.png",
+        "/assets/icons/icon-152x152.png",
+        "/assets/icons/icon-192x192.png",
+        "/assets/icons/icon-384x384.png",
+        "/assets/icons/icon-512x512.png",
+        "/assets/icons/icon-96x96.png"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/assets/Mapbox-marker/Fuel-Saver/links.md": "0740d68ba608a59e4805fcc34ae30c02c8fe927a",
+    "/assets/Mapbox-marker/Fuel-Saver/pump-256x256.png": "8eabc1b13cf4ebe90345f1d64b8102046cd39820",
+    "/assets/Mapbox-marker/Fuel-Saver/pump-512x512.png": "8197b58d0c3ec91186d5867a5ad18f1106a0bee2",
+    "/assets/Mapbox-marker/Fuel-Saver/pump-512x512.svg": "97acf4e4103d0aca011c72de7a56de823de4ee55",
+    "/assets/Mapbox-marker/Fuel-Saver/pump.png": "b9ac0f2d682bbe0c3a8b61b65bbbec1cf6c1e646",
+    "/assets/Mapbox-marker/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
+    "/assets/Mapbox-marker/station.png": "6713aca55a1defd78860ac01138cab373f4fc6c1",
+    "/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
+    "/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
+    "/assets/icons/icon-152x152.png": "7479a9477815dfd9668d60f8b3b2fba709b91310",
+    "/assets/icons/icon-192x192.png": "1abd80d431a237a853ce38147d8c63752f10933b",
+    "/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
+    "/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
+    "/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
+    "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
+    "/index.html": "d45ff473bae70c850699fe6ecbb4209ce66d5031",
+    "/main.a4afc03889d45107.js": "f44136f97518320327fa919c2eee9e0c7be90dd2",
+    "/manifest.webmanifest": "dd1beacd74a407cfa96a56b903727e440424e793",
+    "/polyfills.e64c0c12fc79005e.js": "bbc37ac2a2671da3a34d1cc649e7140d0f148de8",
+    "/runtime.8c139eb370fbe5cc.js": "c663c0e654e2d684b722d1bfeb919c13a669e1c5",
+    "/styles.a4ff2369078b4797.css": "770afeb0a1e7a5a6b4f010f211481422fe546a70"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
