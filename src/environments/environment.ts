@@ -5,7 +5,6 @@
 export const environment = {
   production: false,
   appVersion: require('../../package.json').version + '-dev',
-  lastUpdated: "11:42",
   environmentName: "Development",
   CompanyName: "Actilogic",
   AuthorName: "Antonio Joboy",
