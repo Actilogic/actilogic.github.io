@@ -447,9 +447,6 @@ export class FuelMapComponent implements OnInit {
       // alert(`you are located at: ${pos.lat} ${pos.lng}`);
       this.currentLocation = [pos.lng, pos.lat]
       this.goTo(this.currentLocation)
-
-      this.directions.setOrigin(this.currentLocation); // can be address in form setOrigin("12, Elm Street, NY")
-      this.directions.setDestination(this.perth.coordinates); // can be address
     });
 
 
