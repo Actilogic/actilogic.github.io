@@ -41,8 +41,7 @@ export class FuelSaverComponent implements OnInit {
           var feedJSON = parsedXMLResponse.rss.channel
           this.Feed = feedJSON as FuelWatchFeed;
         } else {
-          alert("Error in loading the");
-          console.error("Error in loading the fuel watch rss Feed");
+          console.error("Error in loading the fuel watch rss Feed", error);
         }
 
       }
