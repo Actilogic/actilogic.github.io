@@ -45,7 +45,7 @@ export class FuelMapComponent implements OnInit {
   // Map customizations
   zoom = 13;
   Icon_pump = '../../assets/Mapbox-marker/Fuel-Saver/pump-256x256.png';
-  Icon_car = '../../assets/Mapbox-marker/Fuel-Saver/car-256x256.png';
+  // Icon_car = '../../assets/Mapbox-marker/Fuel-Saver/car-256x256.png';
   directions: MapboxDirections;
 
 
@@ -104,7 +104,7 @@ export class FuelMapComponent implements OnInit {
       );
 
       // load user image 
-      this.addUser();
+      // this.addUser();
 
     });
 
@@ -261,27 +261,27 @@ export class FuelMapComponent implements OnInit {
 
 
 
-  addUser() {
-    this.map.loadImage(
-      this.Icon_car,
-      (error, image) => {
-        this.map.addImage('car', image);
-        console.log("images load for car", image);
-      }
-    );
+  // addUser() {
+  //   this.map.loadImage(
+  //     this.Icon_car,
+  //     (error, image) => {
+  //       this.map.addImage('car', image);
+  //       console.log("images load for car", image);
+  //     }
+  //   );
 
-    // Add a layer to use the image to represent the data.
-    this.map.addLayer({
-      'id': 'car_user',
-      'type': 'symbol',
-      'source': 'fuelStations', // reference the data source
-      'layout': {
-        'icon-image': 'pump', // reference the image
-        'icon-size': 0.1
-      }
-    });
+  //   // Add a layer to use the image to represent the data.
+  //   this.map.addLayer({
+  //     'id': 'car_user',
+  //     'type': 'symbol',
+  //     'source': 'fuelStations', // reference the data source
+  //     'layout': {
+  //       'icon-image': 'pump', // reference the image
+  //       'icon-size': 0.1
+  //     }
+  //   });
 
-  }
+  // }
 
   addFuelStations() {
     console.log("adding from this", this.geojson)
