@@ -2,12 +2,15 @@ import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/cor
 // import { DynamicChildComponent } from './dynamic-child/dynamic-child.component';
 import { DynamicChildLoaderDirective } from '../../directives/load-child.directive';
 // remove later
-import * as mapboxgl from 'mapbox-gl';
 import { environment } from "../../environments/environment";
 import { FuelWatchFeed } from 'src/models/fuelwatchfeed.model';
 import { FuelWatchItem } from 'src/models/fuelwatchitem.model';
 import { LocationService } from '../../services/location/location.service';
+
+// for the map
+import * as mapboxgl from 'mapbox-gl';
 import * as MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 
 // For the popup
 import { PopupComponent } from "../popup/popup.component";
@@ -29,10 +32,22 @@ export class FuelMapComponent implements OnInit {
   style = 'mapbox://styles/antoniojoboy/cl2569rep000415mf7upq7j1m';
   lat = -31.9523;
   lng = 115.8613;
-  perth = [this.lng, this.lat];
-  currentLocation = this.perth;
+
+  // Default locations
+  perth = {
+    lng: this.lng,
+    lat: this.lat,
+    coordinates: [this.lng, this.lat]
+  };
+
+  currentLocation = this.perth.coordinates;
+
+  // Map customizations
   zoom = 13;
-  pumpIcon = '../../assets/Mapbox-marker/Fuel-Saver/pump-256x256.png';
+  Icon_pump = '../../assets/Mapbox-marker/Fuel-Saver/pump-256x256.png';
+  Icon_car = '../../assets/Mapbox-marker/Fuel-Saver/car-256x256.png';
+  directions: MapboxDirections;
+
 
   private dynamicComponentService: DynamicComponentService
 
@@ -47,6 +62,11 @@ export class FuelMapComponent implements OnInit {
   constructor(
   ) {
     mapboxgl.accessToken = environment.mapbox.accessToken;
+    this.directions = new MapboxDirections({
+      accessToken: mapboxgl.accessToken,
+      interactive: false,
+      unit: 'metric'
+    })
   }
 
   // private loadDynamicComponent() {
@@ -55,7 +75,6 @@ export class FuelMapComponent implements OnInit {
 
   ngOnInit() {
     // this.loadDynamicComponent();
-
 
     // build map
     this.map = new mapboxgl.Map(
@@ -67,20 +86,7 @@ export class FuelMapComponent implements OnInit {
       }
     );
 
-    // add navigation controls
-    this.map.addControl(
-      new mapboxgl.NavigationControl()
-    );
-
-    // add the directions 
-    this.map.addControl(
-      new MapboxDirections({
-        accessToken: mapboxgl.accessToken,
-        unit: 'metric'
-      }),
-      'top-left'
-    );
-
+    this.addMapControls();
 
     this.map.on('load', () => {
       // Go to current locations
@@ -88,7 +94,7 @@ export class FuelMapComponent implements OnInit {
 
       // Load an image from an external URL.
       this.map.loadImage(
-        this.pumpIcon,
+        this.Icon_pump,
         (error, image) => {
           if (error) throw error;
           // Add the image to the this.map style.
@@ -140,23 +146,31 @@ export class FuelMapComponent implements OnInit {
 
       console.log("feature()", feature);
 
-      var popup = new mapboxgl.Popup()
+      new mapboxgl.Popup()
         .setLngLat(coordinates)
         .setHTML(descriptionHTML)
         .addTo(this.map);
 
+      // the event listener is scoped to this onload function which is why we need to do this
+      // estabilishes this feed as 'this' so can be used in event listener
+      var self = this;
+
+      // add the event listener for when you want to click the directions button
       document.getElementById("calcCost").addEventListener("click", function () {
-        console.log("clicked a button");
-        console.log(feature);
-        testMap();
+        self.directions.setOrigin(self.currentLocation)
+        // dont forget that the json object that is returned is all string, so need to convert to numbers 
+        // so that the directions and cooredinates can be set
+        self.directions.setDestination([<number>JSON.parse(feature.properties.coordinates)[0], <number>JSON.parse(feature.properties.coordinates)[1]])
+        console.log("feature", feature);
+        console.log("self", self);
+        console.log("feature.properties.coordinates withouth conversion", JSON.parse(feature.properties.coordinates)[0]);
+        console.log("feature.properties.coordinates withouth conversion", JSON.parse(feature.properties.coordinates)[0], JSON.parse(feature.properties.coordinates)[1]);
+        console.log("feature.properties.coordinates", <number>JSON.parse(feature.properties.coordinates)[0], <number>JSON.parse(feature.properties.coordinates)[1]);
+
       });
 
     });
 
-    function testMap() {
-      alert("are we there yet");
-      console.log("this.map", this.map);
-    };
 
     // Change the cursor to a pointer when the mouse is over the stations layer.
     this.map.on('mouseenter', 'stations', () => {
@@ -169,6 +183,52 @@ export class FuelMapComponent implements OnInit {
     });
 
   }
+
+  addMapControls() {
+
+    // Add search functionality 
+    this.map.addControl(
+      new MapboxGeocoder({
+        // Initialize the geocoder
+        accessToken: mapboxgl.accessToken, // Set the access token
+        mapboxgl: mapboxgl, // Set the mapbox-gl instance
+        marker: true, // Do not use the default marker style
+        placeholder: '  Search for places', // Placeholder text for the search bar
+        // bbox: [this.perth.lng - 0.1, this.perth.lat - 0.05,this.perth.lng + 0.1, this.perth.lat + 0.1 ], // Boundary for Perth
+        proximity: {
+          longitude: this.perth.lng,
+          latitude: this.perth.lat,
+        } // Coordinates of Perth
+      })
+    );
+
+    // add the directions
+    this.map.addControl(
+      this.directions,
+      'top-right'
+    );
+
+
+    // add navigation controls
+    this.map.addControl(
+      new mapboxgl.NavigationControl(), 'bottom-right'
+    );
+
+    // Add geolocate control to the map, to go to current location.
+    this.map.addControl(
+      new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true
+        },
+        // When active the map will receive updates to the device's location as it changes.
+        trackUserLocation: true,
+        // Draw an arrow next to the location dot to indicate which direction the device is heading.
+        showUserHeading: true
+      }), 'bottom-right'
+    );
+
+  }
+
 
   goTo(location) {
     console.log("location", location);
@@ -203,16 +263,16 @@ export class FuelMapComponent implements OnInit {
 
   addUser() {
     this.map.loadImage(
-      this.pumpIcon,
+      this.Icon_car,
       (error, image) => {
-        this.map.addImage('pump', image);
-        console.log("images load for pump", image);
+        this.map.addImage('car', image);
+        console.log("images load for car", image);
       }
     );
 
     // Add a layer to use the image to represent the data.
     this.map.addLayer({
-      'id': 'z',
+      'id': 'car_user',
       'type': 'symbol',
       'source': 'fuelStations', // reference the data source
       'layout': {
@@ -276,6 +336,10 @@ export class FuelMapComponent implements OnInit {
             popup: {
               html: this.toPopup(fuelStation), // add content inside the marker, in this case a star
             },
+            coordinates: [
+              <number><unknown>fuelStation.longitude,
+              <number><unknown>fuelStation.latitude,
+            ]
           }
         }
       );
@@ -355,11 +419,7 @@ export class FuelMapComponent implements OnInit {
                 <div class="col-12">
                     <button id="calcCost" 
                         <span class="mat-button-wrapper">
-                            Directions
-                            <mat-icon role="img" class="mat-icon notranslate material-icons mat-icon-no-color"
-                                aria-hidden="true" data-mat-icon-type="font">
-                                directions
-                            </mat-icon>
+                            Calculate cost to get there
                         </span>
                         <span matripple="" class="mat-ripple mat-button-ripple"></span>
                         <span class="mat-button-focus-overlay"> </span>
@@ -369,7 +429,6 @@ export class FuelMapComponent implements OnInit {
         </div>
     </div>
 </div>
-<app-popup></app-popup>
 ` ;
 
 
@@ -378,8 +437,8 @@ export class FuelMapComponent implements OnInit {
     return outPopUp
   }
 
-  testMap() {
-    alert("clicked the calc button on popup")
+  test() {
+    alert("testing function")
   }
 
   gotoCurrentLocation() {
@@ -388,7 +447,12 @@ export class FuelMapComponent implements OnInit {
       // alert(`you are located at: ${pos.lat} ${pos.lng}`);
       this.currentLocation = [pos.lng, pos.lat]
       this.goTo(this.currentLocation)
+
+      this.directions.setOrigin(this.currentLocation); // can be address in form setOrigin("12, Elm Street, NY")
+      this.directions.setDestination(this.perth.coordinates); // can be address
     });
+
+
   }
 
   getLocation() {

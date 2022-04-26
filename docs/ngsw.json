@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1650891110510,
+  "timestamp": 1650950822794,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,10 +13,10 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main.c37b9db30ab2974b.js",
+        "/main.1a5655e175d31d88.js",
         "/manifest.webmanifest",
         "/polyfills.e64c0c12fc79005e.js",
-        "/runtime.8c139eb370fbe5cc.js",
+        "/runtime.b358c53eb83a4684.js",
         "/styles.a4ff2369078b4797.css"
       ],
       "patterns": []
@@ -29,6 +29,7 @@
         "ignoreVary": true
       },
       "urls": [
+        "/assets/Mapbox-marker/Fuel-Saver/car-256x256.png",
         "/assets/Mapbox-marker/Fuel-Saver/links.md",
         "/assets/Mapbox-marker/Fuel-Saver/pump-256x256.png",
         "/assets/Mapbox-marker/Fuel-Saver/pump-512x512.png",
@@ -49,7 +50,8 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/assets/Mapbox-marker/Fuel-Saver/links.md": "0740d68ba608a59e4805fcc34ae30c02c8fe927a",
+    "/assets/Mapbox-marker/Fuel-Saver/car-256x256.png": "e67035ed8c461d5628d9aeedb5f0a5132133379f",
+    "/assets/Mapbox-marker/Fuel-Saver/links.md": "e8459fb1a98069d60525310cdc5b0e1ac25208ad",
     "/assets/Mapbox-marker/Fuel-Saver/pump-256x256.png": "8eabc1b13cf4ebe90345f1d64b8102046cd39820",
     "/assets/Mapbox-marker/Fuel-Saver/pump-512x512.png": "8197b58d0c3ec91186d5867a5ad18f1106a0bee2",
     "/assets/Mapbox-marker/Fuel-Saver/pump-512x512.svg": "97acf4e4103d0aca011c72de7a56de823de4ee55",
@@ -64,11 +66,11 @@
     "/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
     "/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
     "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
-    "/index.html": "58a2e28f676e2e632788a76339d4b74121796964",
-    "/main.c37b9db30ab2974b.js": "2d4cb45e2e7f1cb83f211c6ff68e300f2b86fb46",
+    "/index.html": "e9533f3955ad5ac7093cb30531fa1a14663c392d",
+    "/main.1a5655e175d31d88.js": "c45ae6a68960ff8746a88e6242c9ae21a5bbed0d",
     "/manifest.webmanifest": "dd1beacd74a407cfa96a56b903727e440424e793",
     "/polyfills.e64c0c12fc79005e.js": "bbc37ac2a2671da3a34d1cc649e7140d0f148de8",
-    "/runtime.8c139eb370fbe5cc.js": "c663c0e654e2d684b722d1bfeb919c13a669e1c5",
+    "/runtime.b358c53eb83a4684.js": "e1b9bfd0d466ee47ac8498256f4e77a07a5e11de",
     "/styles.a4ff2369078b4797.css": "770afeb0a1e7a5a6b4f010f211481422fe546a70"
   },
   "navigationUrls": [
