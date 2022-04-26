@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from '../components/footer/footer.component';
 import { FuelMapComponent } from '../components/fuel-map/fuel-map.component';
 import { PopupComponent } from '../components/popup/popup.component';
+import { FuelCalcComponent } from '../components/fuel-calc/fuel-calc.component';
 
 declare var require: any;
 @NgModule({
@@ -23,6 +24,7 @@ declare var require: any;
     FooterComponent,
     FuelMapComponent,
     PopupComponent,
+    FuelCalcComponent,
   ],
   imports: [
     BrowserModule,
