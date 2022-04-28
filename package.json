@@ -1,13 +1,13 @@
 {
   "name": "actilogic",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "browser": {
     "http": false,
     "https": false
   },
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config ./src/proxy.config.json",
     "prebuild": "npm --no-git-tag-version version patch",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
