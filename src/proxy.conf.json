@@ -1,0 +1,6 @@
+{
+    "/FuelWatchAPI": {
+        "target": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS",
+        "secure": true
+    }
+}

@@ -1,3 +1,3 @@
 @REM npm install 
 npm run build
-ng build
+ng build --output-hashing all
