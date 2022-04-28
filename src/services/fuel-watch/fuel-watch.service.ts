@@ -25,8 +25,8 @@ export class FuelWatchService {
     // To get around this, you can use a proxy.
     // dont need it if this is hosted online, and in production
     var apiurl: string = environment.production ? this.fuelWatchURL : this.CORS_PROXY + this.fuelWatchURL;
-    console.log("fetching from",apiurl)
-    return this.http.get<any>(apiurl);
+    console.log("fetching from", apiurl)
+    return <any>this.http.get(apiurl).toPromise();
   }
 
 
