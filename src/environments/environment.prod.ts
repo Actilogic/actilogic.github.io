@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   appVersion: require('../../package.json').version,
   environmentName: "Production",
   CompanyName: "Actilogic",

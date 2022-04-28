@@ -1,6 +1,6 @@
 {
   "name": "actilogic",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "browser": {
     "http": false,
     "https": false
