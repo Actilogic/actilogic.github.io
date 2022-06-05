@@ -65,6 +65,8 @@ export class FuelMapComponent implements OnInit {
     this.directions = new MapboxDirections({
       accessToken: mapboxgl.accessToken,
       interactive: false,
+      alternatives: true,
+      annotations: "distance,duration,speed,congestion,congestion_numeric,maxspeed ,closure,state_of_charge",
       unit: 'metric'
     })
   }
@@ -163,6 +165,7 @@ export class FuelMapComponent implements OnInit {
         self.directions.setDestination([<number>JSON.parse(feature.properties.coordinates)[0], <number>JSON.parse(feature.properties.coordinates)[1]])
         console.log("feature", feature);
         console.log("self", self);
+        console.log("directions.query(); ", self.directions);
         console.log("feature.properties.coordinates withouth conversion", JSON.parse(feature.properties.coordinates)[0]);
         console.log("feature.properties.coordinates withouth conversion", JSON.parse(feature.properties.coordinates)[0], JSON.parse(feature.properties.coordinates)[1]);
         console.log("feature.properties.coordinates", <number>JSON.parse(feature.properties.coordinates)[0], <number>JSON.parse(feature.properties.coordinates)[1]);

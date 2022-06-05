@@ -26,8 +26,8 @@ export class FuelWatchService {
     // dont need it if this is hosted online, and in production
     var apiurl: string = environment.production ? this.fuelWatchURL : this.CORS_PROXY + this.fuelWatchURL;
     console.log("fetching from", apiurl)
-    // return this.http.get<any>(apiurl);
-    return this.http.get<any>("/FuelWatchAPI/");
+    return this.http.get<any>(apiurl);
+    // return this.http.get<any>("http://localhost:4200/FuelWatchAPI/");
   }
 
 

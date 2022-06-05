@@ -33,6 +33,7 @@ export class FuelSaverComponent implements OnInit {
         var parsedXMLResponse: any = this.parseXML<FuelWatchFeed>(response)
         var feedJSON = parsedXMLResponse.rss.channel
         this.Feed = <FuelWatchFeed>feedJSON;
+        console.log("this.Feed", this.Feed)
       },
       (error) => {                              //Error callback
         if (!environment.production) {
