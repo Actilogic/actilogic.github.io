@@ -1,3 +1,2 @@
-<app-fuel-calc></app-fuel-calc>
-
-<app-fuel-map [feed]=Feed></app-fuel-map>
+<app-fuel-calc [FuelCalc_distance]=fuelSaver_distance></app-fuel-calc>
+<app-fuel-map [feed]=Feed (fuelMap_distance)="setDistance($event)"></app-fuel-map>

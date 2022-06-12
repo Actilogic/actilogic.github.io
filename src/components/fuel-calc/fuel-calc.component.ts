@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-fuel-calc',
@@ -7,7 +7,8 @@ import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 })
 export class FuelCalcComponent implements OnInit, OnChanges {
 
-  fuelEfficiency: number = 0;
+  @Input() FuelCalc_fuelEfficiency: number;
+  @Input() FuelCalc_distance: number;
 
   constructor() { }
 
@@ -24,14 +25,27 @@ export class FuelCalcComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    alert("new efficiency" + this.fuelEfficiency);
+    // alert("new efficiency" + this.FuelCalc_fuelEfficiency);
+    // alert("new distance" + this.FuelCalc_distance);
 
     for (let property in changes) {
       if (property === 'feed') {
         //   console.log('Previous:', changes[property].previousValue);
         //   console.log('Current:', changes[property].currentValue);
         //   console.log('firstChange:', changes[property].firstChange);
-        this.fuelEfficiency = changes[property].currentValue;
+        this.FuelCalc_fuelEfficiency = changes[property].currentValue;
+      }
+      if (property === 'fuelEfficiency') {
+        //   console.log('Previous:', changes[property].previousValue);
+        //   console.log('Current:', changes[property].currentValue);
+        //   console.log('firstChange:', changes[property].firstChange);
+        this.FuelCalc_fuelEfficiency = changes[property].currentValue;
+      }
+      if (property === 'distance') {
+        //   console.log('Previous:', changes[property].previousValue);
+        //   console.log('Current:', changes[property].currentValue);
+        //   console.log('firstChange:', changes[property].firstChange);
+        this.FuelCalc_distance = changes[property].currentValue;
       }
     }
   }

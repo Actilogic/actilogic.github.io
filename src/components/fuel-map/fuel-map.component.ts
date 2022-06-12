@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 // import { DynamicChildComponent } from './dynamic-child/dynamic-child.component';
 import { DynamicChildLoaderDirective } from '../../directives/load-child.directive';
 // remove later
@@ -26,6 +26,9 @@ import { stat } from 'fs';
 })
 
 export class FuelMapComponent implements OnInit {
+
+  @Output() fuelMap_distance = new EventEmitter<number>();
+
   map: mapboxgl.Map;
   // style = 'mapbox://styles/mapbox/navigation-night-v1';
   // style = 'mapbox://styles/mapbox/outdoors-v11';
@@ -64,9 +67,7 @@ export class FuelMapComponent implements OnInit {
     mapboxgl.accessToken = environment.mapbox.accessToken;
     this.directions = new MapboxDirections({
       accessToken: mapboxgl.accessToken,
-      interactive: false,
-      alternatives: true,
-      annotations: "distance,duration,speed,congestion,congestion_numeric,maxspeed ,closure,state_of_charge",
+      interactive: true,
       unit: 'metric'
     })
   }
@@ -162,17 +163,48 @@ export class FuelMapComponent implements OnInit {
         self.directions.setOrigin(self.currentLocation)
         // dont forget that the json object that is returned is all string, so need to convert to numbers 
         // so that the directions and cooredinates can be set
-        self.directions.setDestination([<number>JSON.parse(feature.properties.coordinates)[0], <number>JSON.parse(feature.properties.coordinates)[1]])
-        console.log("feature", feature);
-        console.log("self", self);
-        console.log("directions.query(); ", self.directions);
-        console.log("feature.properties.coordinates withouth conversion", JSON.parse(feature.properties.coordinates)[0]);
-        console.log("feature.properties.coordinates withouth conversion", JSON.parse(feature.properties.coordinates)[0], JSON.parse(feature.properties.coordinates)[1]);
-        console.log("feature.properties.coordinates", <number>JSON.parse(feature.properties.coordinates)[0], <number>JSON.parse(feature.properties.coordinates)[1]);
+        var destination = <number>JSON.parse(feature.properties.coordinates);
+        self.directions.setDestination(destination)
 
+        console.log("self.current location", self.currentLocation);
+        console.log("self.directions", self.directions);
+
+        console.log("distance before ------------------------");
+        console.log("distance before ------------------------");
+        getDistanceBetweenPoints('driving-traffic', self.currentLocation, destination).then((distanceData) => {
+          console.log("distanceData",distanceData);
+          self.fuelMap_distance.emit(distanceData);
+        });
+        console.log("distance after ------------------------");
+        console.log("distance after ------------------------");
+        // send thit to the calc component 
       });
 
     });
+
+
+
+    async function getDistanceBetweenPoints(routingProfile, pointA, pointB) {
+      /**
+       * Get the distance between points  
+      */
+      var origin = pointA.join(",");
+      var destination = pointB.join(",");
+      var coordinates = `${origin};${destination}`;
+      console.log("getting distance between", origin, destination);
+      var mapBoxApi = `https://api.mapbox.com/directions/v5/mapbox/${routingProfile}/${coordinates}?alternatives=true&geometries=geojson&language=en&overview=simplified&steps=true&access_token=${mapboxgl.accessToken}`;
+
+      const query = await fetch(
+        mapBoxApi,
+        { method: 'GET' }
+      );
+
+      const directionJSON = await query.json();
+      var distance = directionJSON.routes[0].distance;
+      console.log("directionJSON", directionJSON);
+      console.log("distance", distance);
+      return distance;
+    }
 
 
     // Change the cursor to a pointer when the mouse is over the stations layer.
