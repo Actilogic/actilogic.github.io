@@ -4,9 +4,12 @@
 
         <p>fuel-calc works!</p>
 
-        Parent distance: {{ FuelCalc_distance }}<br>
-        Parent effiecienct: {{ (FuelCalc_distance) }}
+        petrol cost : {{ FuelCalc_price }}<br>
+        distance to travel : {{ FuelCalc_distance }}<br>
+        Efficiency: <input [ngModel]="this.FuelCalc_fuelEfficiency" (ngModelChange)="setFuelEfficiency($event)"
+            placeholder="Litres used per 100km"><br>
+        Cost: {{ FuelCalc_cost }}
 
-        <input (FuelCalc_fuelEfficiency)="FuelCalc_fuelEfficiency">
+
     </div>
 </div>

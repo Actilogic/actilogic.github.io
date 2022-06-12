@@ -12,6 +12,7 @@ import { NgxXml2jsonService } from 'ngx-xml2json';
 export class FuelSaverComponent implements OnInit {
   // used to pass data from the map to the calc component
   fuelSaver_distance: number;
+  fuelSaver_price: number;
 
   public environment = environment;
   public FuelWatchFeedList: FuelWatchFeed = null;
@@ -62,8 +63,11 @@ export class FuelSaverComponent implements OnInit {
 
   public setDistance(newDistance: number) {
     this.fuelSaver_distance = newDistance;
-    console.log("new distnace in the fuel savr cononent from param",newDistance)
-    console.log("new distnace in the fuel savr cononent", this.fuelSaver_distance)
+  }
+
+  public setPrice(newPrice: number) {
+    this.fuelSaver_price = newPrice;
+
   }
 
 }
