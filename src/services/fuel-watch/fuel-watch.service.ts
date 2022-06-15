@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { FuelWatchFeed } from 'src/models/fuelwatchfeed.model';
 import { Observable } from 'rxjs';
+import { Constants } from 'src/app/config/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,7 @@ import { Observable } from 'rxjs';
 export class FuelWatchService {
 
   // url to the fuel watch rss
-  private fuelWatchURL: string = "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS?";
-  private CORS_PROXY: string = "https://cors-anywhere.herokuapp.com/";
+
 
   constructor(
     private http: HttpClient,
@@ -24,7 +24,7 @@ export class FuelWatchService {
     // Note: some RSS feeds can't be loaded in the browser due to CORS security.
     // To get around this, you can use a proxy.
     // dont need it if this is hosted online, and in production
-    var apiurl: string = environment.production ? this.fuelWatchURL : this.CORS_PROXY + this.fuelWatchURL;
+    var apiurl: string = environment.production ? fuelWatchURL : .CORS_PROXY + this.fuelWatchURL;
     console.log("fetching from", apiurl)
     return this.http.get<any>(apiurl);
     // return this.http.get<any>("http://localhost:4200/FuelWatchAPI/");
