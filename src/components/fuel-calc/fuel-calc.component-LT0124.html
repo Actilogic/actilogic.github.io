@@ -1,0 +1,15 @@
+<div class="panel">
+    <button id="openbtn" class="openbtn">Fuel Calculations</button>
+    <div id="mySidepanel" class="sidepanel">
+
+        <p>fuel-calc works!</p>
+
+        petrol cost : {{ FuelCalc_price }}<br>
+        distance to travel : {{ FuelCalc_distance }}<br>
+        Efficiency: <input [ngModel]="this.FuelCalc_fuelEfficiency" (ngModelChange)="setFuelEfficiency($event)"
+            placeholder="Litres used per 100km"><br>
+        Cost: {{ FuelCalc_cost }}
+
+
+    </div>
+</div>
