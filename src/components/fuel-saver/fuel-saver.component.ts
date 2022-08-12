@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { FuelWatchService } from '../../services/fuel-watch/fuel-watch.service';
 import { environment } from 'src/environments/environment';
 import { FuelWatchFeed } from 'src/models/fuelwatchfeed.model';
@@ -10,6 +10,9 @@ import { NgxXml2jsonService } from 'ngx-xml2json';
   styleUrls: ['./fuel-saver.component.scss']
 })
 export class FuelSaverComponent implements OnInit {
+  // used to pass data from the map to the calc component
+  fuelSaver_distance: number;
+  fuelSaver_price: number;
 
   public environment = environment;
   public FuelWatchFeedList: FuelWatchFeed = null;
@@ -33,6 +36,7 @@ export class FuelSaverComponent implements OnInit {
         var parsedXMLResponse: any = this.parseXML<FuelWatchFeed>(response)
         var feedJSON = parsedXMLResponse.rss.channel
         this.Feed = <FuelWatchFeed>feedJSON;
+        console.log("this.Feed", this.Feed)
       },
       (error) => {                              //Error callback
         if (!environment.production) {
@@ -53,6 +57,17 @@ export class FuelSaverComponent implements OnInit {
     var xml = parser.parseFromString(xmlString, 'text/xml');
     var obj = <T>this.ngxXml2jsonService.xmlToJson(xml);
     return obj;
+  }
+
+
+
+  public setDistance(newDistance: number) {
+    this.fuelSaver_distance = newDistance;
+  }
+
+  public setPrice(newPrice: number) {
+    this.fuelSaver_price = newPrice;
+
   }
 
 }

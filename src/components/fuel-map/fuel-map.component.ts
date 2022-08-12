@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 // import { DynamicChildComponent } from './dynamic-child/dynamic-child.component';
 import { DynamicChildLoaderDirective } from '../../directives/load-child.directive';
 // remove later
@@ -26,6 +26,9 @@ import { stat } from 'fs';
 })
 
 export class FuelMapComponent implements OnInit {
+
+
+
   map: mapboxgl.Map;
   // style = 'mapbox://styles/mapbox/navigation-night-v1';
   // style = 'mapbox://styles/mapbox/outdoors-v11';
@@ -55,7 +58,8 @@ export class FuelMapComponent implements OnInit {
 
   private locationService: LocationService = new LocationService();
 
-
+  @Output() fuelMap_distance = new EventEmitter<number>();
+  @Output() fuelMap_price = new EventEmitter<number>();
   @Input() feed = {};
   @ViewChild(DynamicChildLoaderDirective, { static: true }) dynamicChild!: DynamicChildLoaderDirective;
 
@@ -64,7 +68,7 @@ export class FuelMapComponent implements OnInit {
     mapboxgl.accessToken = environment.mapbox.accessToken;
     this.directions = new MapboxDirections({
       accessToken: mapboxgl.accessToken,
-      interactive: false,
+      interactive: true,
       unit: 'metric'
     })
   }
@@ -113,6 +117,7 @@ export class FuelMapComponent implements OnInit {
     this.map.on('click', 'stations', (station) => {
       // alert("station clicked");
       // // Copy coordinates array.
+      var price = station.features[0].properties.price;
       var coordinates = station.features[0].geometry.coordinates.slice();
       var descriptionHTML = JSON.parse(station.features[0].properties.popup).html;
       console.log("station.features[0]", station.features[0]);
@@ -130,19 +135,7 @@ export class FuelMapComponent implements OnInit {
       while (Math.abs(station.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += station.lngLat.lng > coordinates[0] ? 360 : -360;
       }
-      // //-----------------------
-      // // This is the test for the popup
-      // //-----------------------
 
-      // Inside a map.on("click") or wherever you want to create your popup
-
-      // // Inject Component and Render Down to HTMLDivElement Object
-      // console.log("new PopupComponent()", descriptionHTML);
-      // let popupContent = this.dynamicComponentService.injectComponent(
-      //   PopupComponent,
-      //   popup => popup.title = " new PopupComponent()"
-      // ); // This Is where You can pass
-      // // a Model or other Properties to your Component
 
       console.log("feature()", feature);
 
@@ -160,16 +153,47 @@ export class FuelMapComponent implements OnInit {
         self.directions.setOrigin(self.currentLocation)
         // dont forget that the json object that is returned is all string, so need to convert to numbers 
         // so that the directions and cooredinates can be set
-        self.directions.setDestination([<number>JSON.parse(feature.properties.coordinates)[0], <number>JSON.parse(feature.properties.coordinates)[1]])
-        console.log("feature", feature);
-        console.log("self", self);
-        console.log("feature.properties.coordinates withouth conversion", JSON.parse(feature.properties.coordinates)[0]);
-        console.log("feature.properties.coordinates withouth conversion", JSON.parse(feature.properties.coordinates)[0], JSON.parse(feature.properties.coordinates)[1]);
-        console.log("feature.properties.coordinates", <number>JSON.parse(feature.properties.coordinates)[0], <number>JSON.parse(feature.properties.coordinates)[1]);
+        var destination = <number>JSON.parse(feature.properties.coordinates);
+        self.directions.setDestination(destination)
+
+        console.log("self.current location", self.currentLocation);
+        console.log("self.directions", self.directions);
+
+        self.fuelMap_price.emit(price);
+
+        getDistanceBetweenPoints('driving-traffic', self.currentLocation, destination).then((distanceData) => {
+          console.log("distanceData", distanceData);
+          // sends this data to the calc component 
+          self.fuelMap_distance.emit(distanceData);
+        });
 
       });
 
     });
+
+
+
+    async function getDistanceBetweenPoints(routingProfile, pointA, pointB) {
+      /**
+       * Get the distance between points  
+      */
+      var origin = pointA.join(",");
+      var destination = pointB.join(",");
+      var coordinates = `${origin};${destination}`;
+      console.log("getting distance between", origin, destination);
+      var mapBoxApi = `https://api.mapbox.com/directions/v5/mapbox/${routingProfile}/${coordinates}?alternatives=true&geometries=geojson&language=en&overview=simplified&steps=true&access_token=${mapboxgl.accessToken}`;
+
+      const query = await fetch(
+        mapBoxApi,
+        { method: 'GET' }
+      );
+
+      const directionJSON = await query.json();
+      var distance = directionJSON.routes[0].distance;
+      console.log("directionJSON", directionJSON);
+      console.log("distance", distance);
+      return distance;
+    }
 
 
     // Change the cursor to a pointer when the mouse is over the stations layer.
@@ -260,29 +284,6 @@ export class FuelMapComponent implements OnInit {
   }
 
 
-
-  // addUser() {
-  //   this.map.loadImage(
-  //     this.Icon_car,
-  //     (error, image) => {
-  //       this.map.addImage('car', image);
-  //       console.log("images load for car", image);
-  //     }
-  //   );
-
-  //   // Add a layer to use the image to represent the data.
-  //   this.map.addLayer({
-  //     'id': 'car_user',
-  //     'type': 'symbol',
-  //     'source': 'fuelStations', // reference the data source
-  //     'layout': {
-  //       'icon-image': 'pump', // reference the image
-  //       'icon-size': 0.1
-  //     }
-  //   });
-
-  // }
-
   addFuelStations() {
     console.log("adding from this", this.geojson)
     var fuelStationsLayer = this.map.getSource('fuelStations');
@@ -333,6 +334,7 @@ export class FuelMapComponent implements OnInit {
           properties: {
             title: fuelStation.title,
             description: fuelStation.description,
+            price: fuelStation.price,
             popup: {
               html: this.toPopup(fuelStation), // add content inside the marker, in this case a star
             },

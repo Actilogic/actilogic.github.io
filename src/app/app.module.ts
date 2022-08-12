@@ -13,8 +13,11 @@ import { FooterComponent } from '../components/footer/footer.component';
 import { FuelMapComponent } from '../components/fuel-map/fuel-map.component';
 import { PopupComponent } from '../components/popup/popup.component';
 import { FuelCalcComponent } from '../components/fuel-calc/fuel-calc.component';
-
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 declare var require: any;
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,6 +30,9 @@ declare var require: any;
     FuelCalcComponent,
   ],
   imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
